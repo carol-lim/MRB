@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-light ms-4 me-4 mb-4">
+            <div class="card-header">
+                <h4><i class="fa-solid fa-house-laptop"></i> Meeting Rooms<a href="{% url 'add_mr' %}" class="btn btn-outline-primary btn-sm ms-3" >Add</a></h4> 
+            </div>
+
+            {% if meeting_rooms %}
+            <div class="card-body">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                    
+                    {% for mr in meeting_rooms %}
+                    <div class="col">
+                        <div class="card m-auto" style="max-width: 20rem;">
+                            <h5 class="card-header">{{ mr.mroom_name }}</h5>
+                            {% if mr.mr_image %}
+                            <img src="{{ mr.mr_image.url }}" height="200">
+                            {% endif %}
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Level: {{ mr.level }}</li>
+                                <li class="list-group-item">Capacity: {{ mr.capacity }}</li>
+                            </ul>
+                            <div class="card-body">
+                                <a href="{% url 'update_mr' mr.id %}" class="btn btn-primary btn-sm">Update</a>
+                                <a href="{% url 'history' mr.id %}" class="btn btn-primary btn-sm">Booking History</a>
+                              </div>
+                            <div class="card-footer text-muted">
+                                Created at {{ mr.created_at }}, 
+                                Modified at {{ mr.modified_at }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+
+            </div>
+            {% else %}
+            <p class="text-muted p-4">No meeting room. Click "Add" to create new meeting room</p>
+
+            {% endif %}
+            
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}
