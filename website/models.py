@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
@@ -11,3 +12,21 @@ class MeetingRoom(models.Model):
 
 	def __str__(self):
 		return(f"{self.mroom_name}")
+	
+class MeetingType(models.Model):
+	type = models.CharField(max_length=100)
+	
+	def __str__(self):
+		return self.type
+	
+class MRBooking(models.Model):
+	mroom = models.ForeignKey(MeetingRoom, on_delete=models.CASCADE, related_name='mrbookings')
+	staff = models.ForeignKey(User, on_delete=models.CASCADE, related_name='mrbookings')
+	num_attendees = models.IntegerField()
+	type = models.ForeignKey(MeetingType, on_delete=models.CASCADE, related_name='mrbookings')
+	start_date = models.DateField()
+	end_date = models.DateField()
+	start_time = models.TimeField()
+	end_time = models.TimeField()
+	created_at = models.DateTimeField(auto_now_add=True)
+	modified_at = models.DateTimeField(auto_now=True)

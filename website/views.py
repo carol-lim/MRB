@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from .forms import AddMRForm
-from .models import MeetingRoom
+from .forms import AddMRForm, AddBookingForm
+from .models import MeetingRoom, MRBooking
 
 def home(request):
     # Check of logging in
@@ -63,17 +63,44 @@ def update_mr(request, pk):
 
 def history(request, pk):
     if request.user.is_authenticated:
-        return render(request, 'history.html', {'meeting_room': MeetingRoom.objects.get(id=pk)})
+        return render(request, 'history.html', {
+            'meeting_room': MeetingRoom.objects.get(id=pk), 
+            'histories': MRBooking.objects.all(), 
+
+        })
     else:
         messages.success(request, "You Must Be Logged In.")
         return redirect('home')
     
 def add_history(request, pk):
+    form = AddBookingForm(request.POST or None)
     if request.user.is_authenticated:
-        return render(request, 'add_history.html', {'meeting_room': MeetingRoom.objects.get(id=pk)})
+        if request.method == "POST":
+            if form.is_valid():
+                add_history = form.save()
+                messages.success(request, "New booking history for the meeting room is added.")
+                return redirect('history', pk)
+        return render(request, 'add_history.html', {'meeting_room': MeetingRoom.objects.get(id=pk), 'form':form})
     else:
         messages.success(request, "You Must Be Logged In.")
         return redirect('home')
+    
+def update_history(request, pk1, pk2):
+	if request.user.is_authenticated:
+		current_record = MRBooking.objects.get(id=pk2)
+		form = AddBookingForm(request.POST or None, instance=current_record)
+		if form.is_valid():
+			form.save()
+			messages.success(request, "History Has Been Updated")
+			return redirect('meeting_rooms', pk1, 'update_history', pk2)
+		return render(request, 'update_history.html', {
+            'meeting_room': MeetingRoom.objects.get(id=pk1), 
+            'history': MRBooking.objects.get(id=pk2), 
+            'form':form
+        })
+	else:
+		messages.success(request, "You Must Be Logged In.")
+		return redirect('home')
 
 def admin_list(request):
     if request.user.is_authenticated:

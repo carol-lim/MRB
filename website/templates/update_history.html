@@ -22,7 +22,7 @@
                             </ul>
                             <div class="card-body">
                                 <a href="{% url 'update_mr' meeting_room.id %}" class="btn btn-primary btn-sm">Update</a>
-                              </div>
+                            </div>
                             <div class="card-footer text-muted">
                                 Created at {{ meeting_room.created_at }}, 
                                 Modified at {{ meeting_room.modified_at }}
@@ -33,18 +33,18 @@
                     <div class="col-8">
                         <div class="card bg-light ms-4 me-4 mb-4">
                             <div class="card-header">
-                                <h4>Add Meeting Room Booking History</h4>
+                                <h4>Update Meeting Room Booking History</h4>
                             </div>
 
                             <div class="card-body">
                                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
 
-                                    <form method="POST" action="{% url 'add_history' meeting_room.id %}" >
+                                    <form method="POST" action="{% url 'update_history' meeting_room.id history.id %}" >
                                         {% csrf_token %}
                                     
                                         {{ form.as_p }}
                                     <br/>
-                                        <button type="submit" class="btn btn-primary">Add</button>
+                                        <button type="submit" class="btn btn-primary">Update</button>
                                         <a href="{% url 'history' meeting_room.id %}" class="btn btn-secondary">Back</a>
                                     
                                     </form>
