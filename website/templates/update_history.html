@@ -5,12 +5,14 @@
     <div class="col-12">
         <div class="card bg-light ms-4 me-4 mb-4">
             <div class="card-header">
-                <h4><i class="fa-solid fa-rectangle-history"></i> Meeting Room Booking History</h4> 
+                <h4><i class="fa-solid fa-clock-rotate-left"></i> Meeting Room Booking History
+                    <a href="{% url 'history' meeting_room.id %}" class="btn btn-outline-secondary btn-sm ms-2">Back</a> </h4>
             </div>
 
             <div class="card-body">
-                <div class="row row-cols-2 g-3">
-                    <div class="col-4">
+                <div class="row g-3">
+                    <!-- <div class="col-md-2 col-sm-0"></div> -->
+                    <div class="col-md-3">
                         <div class="card m-auto" style="max-width: 20rem;">
                             <h5 class="card-header">{{ meeting_room.mroom_name }}</h5>
                             {% if meeting_room.mr_image %}
@@ -29,24 +31,24 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-8">
-                        <div class="card bg-light ms-4 me-4 mb-4">
+                    
+                    <div class="col-md-9">
+                        <div class="card bg-light ">
                             <div class="card-header">
                                 <h4>Update Meeting Room Booking History</h4>
                             </div>
-
+                            
                             <div class="card-body">
-                                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-
+                                <div class="row g-3">
+                                    
                                     <form method="POST" action="{% url 'update_history' meeting_room.id history.id %}" >
                                         {% csrf_token %}
-                                    
+                                        
                                         {{ form.as_p }}
-                                    <br/>
+                                        <br/>
                                         <button type="submit" class="btn btn-primary">Update</button>
                                         <a href="{% url 'history' meeting_room.id %}" class="btn btn-secondary">Back</a>
-                                    
+                                        
                                     </form>
                                     
                                 </div>
@@ -54,6 +56,7 @@
 
                         </div>
                     </div>
+                    <!-- <div class="col-md-2 col-sm-0"></div> -->
                 </div>
             </div>
         </div>

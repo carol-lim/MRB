@@ -1,5 +1,6 @@
 from django import forms
 from .models import MeetingRoom, MRBooking
+from django.contrib.admin.widgets import AdminDateWidget, AdminTimeWidget
 
 class AddMRForm(forms.ModelForm):
 	class Meta:
@@ -16,7 +17,10 @@ class AddMRForm(forms.ModelForm):
             'level': forms.NumberInput(attrs={ "class":"form-control", "required": "true", "min": "1"}),
             'capacity': forms.NumberInput(attrs={ "class":"form-control", "required": "true", "min": "2"}),
 		}
-
+		
+class DateInput(forms.DateInput):
+    input_type = 'date'
+    
 class AddBookingForm(forms.ModelForm):
 	class Meta:
 		model = MRBooking
@@ -39,10 +43,10 @@ class AddBookingForm(forms.ModelForm):
 			'end_time':'End Time'
         }
 		widgets = {
-            'staff': forms.TextInput(attrs={"class":"form-control", "required": "true"}),
+            'staff': forms.Select(attrs={"class":"form-control", "required": "true"}),
 			'num_attendees':forms.NumberInput(attrs={ "class":"form-control", "required": "true", "min": "2"}),
-            'type': forms.TextInput(attrs={ "class":"form-control", "required": "true"}),
-			'start_date':forms.DateInput(attrs={ "class":"form-control","required":"true",}),
+            'type': forms.Select(attrs={ "class":"form-control", "required": "true"}),
+			'start_date':AdminDateWidget(attrs={ "class":"form-control", "required": "true"}),
 			'end_date':forms.DateInput(attrs={"class":"form-control","required":"true"}),
 			'start_time':forms.TimeInput(attrs={ "class":"form-control","required":"true",}),
 			'end_time':forms.TimeInput(attrs={ "class":"form-control","required":"true"}),

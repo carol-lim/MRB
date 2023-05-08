@@ -5,12 +5,13 @@
     <div class="col-12">
         <div class="card bg-light ms-4 me-4 mb-4">
             <div class="card-header">
-                <h4><i class="fa-solid fa-rectangle-history"></i> Meeting Room Booking History</h4> 
+                <h4><i class="fa-solid fa-clock-rotate-left"></i> Meeting Room Booking History 
+                <a href="{% url 'meeting_rooms' %}" class="btn btn-outline-secondary btn-sm ms-2" >Back</a></h4>
             </div>
 
             <div class="card-body">
-                <div class="row row-cols-2 g-3">
-                    <div class="col-4">
+                <div class="row g-3">
+                    <div class="col-md-3">
                         <div class="card m-auto" style="max-width: 20rem;">
                             <h5 class="card-header">{{ meeting_room.mroom_name }}</h5>
                             {% if meeting_room.mr_image %}
@@ -30,20 +31,20 @@
                         </div>
                     </div>
 
-                    <div class="col-8">
-                        <div class="card bg-light ms-4 me-4 mb-4">
+                    <div class="col-md-9">
+                        <div class="card bg-light mx-2 mb-2">
                             <div class="card-header">
                                 <h4>History
                                     <a href="{% url 'add_history' meeting_room.id  %}" class="btn btn-outline-primary btn-sm ms-3" >Add a record</a>
-                                    <a href="{% url 'meeting_rooms' %}" class="btn btn-outline-secondary btn-sm ms-3" >Back</a>
                                 </h4> 
                             </div>
                 
                             <div class="card-body">
-                                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                                    <table class="table table-striped table-hover table-bordered">
-                                        <thead class="table-dark">
-                                          <tr>
+                            {% if histories %}
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover table-bordered">
+                                    <thead class="table-primary">
+                                        <tr>
                                             <th scope="col">Staff</th>
                                             <th scope="col">Number of Attendees</th>
                                             <th scope="col">Type of Meeting</th>
@@ -51,33 +52,37 @@
                                             <th scope="col">End Date</th>
                                             <th scope="col">Start Time</th>
                                             <th scope="col">End Time</th>
-                                            <th scope="col">ID</th>
-                                          </tr>
-                                        </thead>
-                                        <tbody>
-                                          
-                                {% if histories %}
-                                    {% for history in histories %}
+                                            <th scope="col">Booking date</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    
+                                {% for history in histories %}
                                         <tr>
-                                            <td>{{ history.staff }}</td>
+                                            <td>{{ history.staff.first_name }} {{ history.staff.last_name }}</td>
                                             <td>{{ history.num_attendees }}</td>
                                             <td>{{ history.type }}</td>
                                             <td>{{ history.start_date }}</td>
                                             <td>{{ history.end_date }}</td>
                                             <td>{{ history.start_time }}</td>
                                             <td>{{ history.end_time }}</td>
-                                            <td><a href="{% url 'update_history' meeting_room.id history.id %}">{{ history.id }}</a></td>
+                                            <td>{{ history.created_at }}</td>
+                                            <td><a href="{% url 'update_history' meeting_room.id history.id %}" class="btn btn-primary btn-sm" >Update</a></td>
                                         </tr>
-                                    {% endfor %}
+                                {% endfor %}
+                            
                                 
-                                {% endif %}
-                                
-                                    
-                                    </tbody>
+                                        </tbody>
                                     </table>
                                 </div>
-                            </div>
+
                             
+                            {% else %}
+                            <p class="text-muted p-4">No meeting room booking history, click "Add a record" to add booking record.</p>
+
+                            {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>

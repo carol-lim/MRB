@@ -14,6 +14,9 @@ def home(request):
         if user is not None:
             login(request, user)
             messages.success(request, "You have been logged in")
+            # availability
+
+
             return redirect('home')
         
         else:
@@ -65,8 +68,7 @@ def history(request, pk):
     if request.user.is_authenticated:
         return render(request, 'history.html', {
             'meeting_room': MeetingRoom.objects.get(id=pk), 
-            'histories': MRBooking.objects.all(), 
-
+            'histories': MRBooking.objects.filter(mroom=pk), 
         })
     else:
         messages.success(request, "You Must Be Logged In.")
@@ -101,6 +103,27 @@ def update_history(request, pk1, pk2):
 	else:
 		messages.success(request, "You Must Be Logged In.")
 		return redirect('home')
+
+def available_now(request):
+    if request.user.is_authenticated:
+        return render(request, 'available_now.html')
+    else:
+        messages.success(request, "You Must Be Logged In.")
+        return redirect('home')
+    
+def scheduled(request):
+    if request.user.is_authenticated:
+        return render(request, 'scheduled.html')
+    else:
+        messages.success(request, "You Must Be Logged In.")
+        return redirect('home')
+    
+def now_in_use(request):
+    if request.user.is_authenticated:
+        return render(request, 'now_in_use.html')
+    else:
+        messages.success(request, "You Must Be Logged In.")
+        return redirect('home')
 
 def admin_list(request):
     if request.user.is_authenticated:
