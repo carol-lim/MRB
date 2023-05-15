@@ -8,11 +8,11 @@
             </div>
 
             <div class="card-body">
-                <h4>Available Now</h4>
-                {% if meeting_rooms %}
+                <h4>Available Now <span class="badge bg-info">{{ count }}</span></h4>
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                    {% if available_now %}
                     
-                    {% for mr in meeting_rooms %}
+                    {% for mr in available_now %}
                     <div class="col">
                         <div class="card m-auto" style="max-width: 20rem;">
                             <h5 class="card-header">{{ mr.mroom_name }}</h5>
@@ -34,12 +34,12 @@
                         </div>
                     </div>
                     
+                    {% endfor %}
                 </div>
-                {% endfor %}
 
             </div>
             {% else %}
-            <p class="text-muted p-4">No meeting room available now. Click <a href="{% url 'meeting_rooms' %}">Here</a> to add booking record</p>
+            <p class="text-muted p-4">No meeting room available now. Click <a href="{% url 'meeting_rooms' %}">here</a> to add booking record</p>
 
             {% endif %}
             

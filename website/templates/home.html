@@ -19,7 +19,7 @@
                                 <div class="card text-white bg-success mb-3 text-center m-auto" style="max-width: 20rem;">
                                     <div class="card-header">Available Now</div>
                                     <div class="card-body">
-                                        <h1 class="card-title">10</h4>
+                                        <h1 class="card-title">{{ available_now }}</h4>
                                         <h4 class="card-title">Rooms</h4>
                                         <div class="d-grid gap-2">
                                             <a href="{% url 'available_now' %}" class="btn btn-outline-light btn-sm mt-2">Details</a>
@@ -31,7 +31,7 @@
                                 <div class="card text-white bg-warning mb-3 text-center m-auto" style="max-width: 20rem;">
                                     <div class="card-header">Scheduled in Next Hour</div>
                                     <div class="card-body">
-                                        <h1 class="card-title">10</h4>
+                                        <h1 class="card-title">{{ scheduled }}</h4>
                                         <h4 class="card-title">Rooms</h4>
                                         <div class="d-grid gap-2">
                                             <a href="{% url 'scheduled' %}" class="btn btn-outline-light btn-sm mt-2">Details</a>
@@ -44,7 +44,7 @@
                                 <div class="card text-white bg-danger mb-3 text-center m-auto" style="max-width: 20rem;">
                                     <div class="card-header">Now In Use</div>
                                     <div class="card-body">
-                                        <h1 class="card-title">10</h4>
+                                        <h1 class="card-title">{{ in_use }}</h4>
                                         <h4 class="card-title">Rooms</h4>
                                         <div class="d-grid gap-2">
                                             <a href="{% url 'now_in_use' %}" class="btn btn-outline-light btn-sm mt-2">Details</a>
