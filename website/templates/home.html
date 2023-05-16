@@ -1,10 +1,9 @@
 {% extends 'base.html' %}
-
 {% block content %}
 
-
+    <!-- logged in -->
     {% if user.is_authenticated %}
-        {% if user.is_staff %}
+        {% if user.is_staff or user.is_superuser %}
         <div class="row">
             <div class="col-12">
                 <div class="card bg-light ms-4 me-4 mb-4">
@@ -57,31 +56,60 @@
                 </div>
             </div>
         </div>
-        {% endif %}
 
-    {% else %}
-        <div class="col-md-6 offset-md-3">
+        <!-- logged in as staff -->
+        {% else %} 
+        <div class="row">
+            <div class="col-12">
+                <div class="card bg-light ms-4 me-4 mb-4">
+                    <div class="card-header">
+                        <h4><i class="fa-solid fa-house-laptop"></i> Your Bookings 
+                            <a href="{% url 'search' %}" class="btn btn-outline-primary btn-sm ms-2" >New Booking</a>
+                        </h4> 
+                    </div>
+                    <div class="card-body">
+                        {% if histories %}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover table-bordered">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th scope="col">Meeting Room</th>
+                                        <th scope="col">Number of Attendees</th>
+                                        <th scope="col">Type of Meeting</th>
+                                        <th scope="col">Start Date</th>
+                                        <th scope="col">End Date</th>
+                                        <th scope="col">Start Time</th>
+                                        <th scope="col">End Time</th>
+                                        <th scope="col">Booking date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                
+                            {% for history in histories %}
+                                    <tr>
+                                        <td>{{ history.mroom.mroom_name }}</td>
+                                        <td>{{ history.num_attendees }}</td>
+                                        <td>{{ history.type }}</td>
+                                        <td>{{ history.start_date }}</td>
+                                        <td>{{ history.end_date }}</td>
+                                        <td>{{ history.start_time }}</td>
+                                        <td>{{ history.end_time }}</td>
+                                        <td>{{ history.created_at }}</td>
+                                    </tr>
+                            {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        {% else %}
+                        <p class="text-muted p-4">No meeting room booking history. Click <a href="#">here</a> to book meeting room.</p>
 
-            <h1>Login</h1>
-            <br/>
-            <form method="POST" action="{% url 'home' %}">
-                {% csrf_token %}
-
-                <div class="mb-3">
-                    <input type="text" class="form-control" name="username", placeholder="Username" required>
+                        {% endif %}
+                    </div>
                 </div>
-                <br/>
-                <div class="mb-3">
-                    <input type="password" class="form-control" name="password", placeholder="Password" required>
-                </div>
-                <br/>
-                <button type="submit" class="btn btn-secondary">Login</button>
-
-            </form>
-
+            </div>
         </div>
-
+        {% endif %}
+    
     {% endif %}
-
-
 {% endblock %}

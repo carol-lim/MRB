@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="row ">
+    <div class="col-12">
+        <div class="card bg-light ms-4 me-4 mb-4">
+            <div class="card-header">
+                <h4><i class="fa-solid fa-square-plus"></i> New Booking</h4>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <div class="card bg-light" >
+                            <h5 class="card-header">Search</h5>
+                            <div class="card-body">
+                                <form id="search-form">
+                                    {% csrf_token %}
+                                    <label for="#start-date-input">Start Date: </label><br>
+                                    <input type="date" id="start-date-input" class="form-control" required="true"><br>
+                                    <label for="#start-time-input">Start Time: </label><br>
+                                    <input type="time" id="start-time-input" class="form-control" required="true"><br>
+                                    <label for="#end-date-input">End Date: </label><br>
+                                    <input type="date" id="end-date-input" class="form-control" required="true"><br>
+                                    <label for="#end-date-input">End Time: </label><br>
+                                    <input type="time" id="end-time-input" class="form-control" required="true"><br>
+                                    <br>
+                                    <button type="submit" class="btn btn-primary">Search</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="card bg-light">
+                            <div class="card-header">
+                                <h4>Available Rooms</h4>
+                                <span class="badge bg-info">{{ count }}</span>
+                            </div>
+                            <div class="card-body" >
+                                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" id="meeting-room-cards-container">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#search-form').submit(function(e) {
+            e.preventDefault(); // Prevent form submission
+
+            // Get input values
+            var startDate = $('#start-date-input').val();
+            var startTime = $('#start-time-input').val();
+            var endDate = $('#end-date-input').val();
+            var endTime = $('#end-time-input').val();
+
+            // Send Ajax request
+            $.ajax({
+                url: '/search/',  // URL of the Django view handling the request
+                method: 'POST',
+                headers: { "X-CSRFToken": "{{ csrf_token }}" },
+                data: {
+                    start_date: startDate,
+                    start_time: startTime,
+                    end_date: endDate,
+                    end_time: endTime
+                },
+                success: function(response) {
+                    var container = $('#meeting-room-cards-container');
+                    // Clear the container before adding new card
+                    container.empty();
+
+                    if (response === null) {
+                        var notfound = $('<p>').addClass("text-muted p-4").text("No meeting room available in the selected timeframe. Please search again.");
+                        container.append(notfound);
+                    }
+                    else {
+
+                        var meetingRooms = JSON.parse(response);
+                        
+                        $.each(meetingRooms, function(index, meetingRoom) {
+                            // Create the Bootstrap card element
+                            var col = $('<div>').addClass('col');
+                            var card = $("<div>").addClass("card");
+                            var book_btn = $('<a>').addClass('btn btn-primary btn-sm mx-1').text("Book").attr("href", "/booking/");
+                            var history_btn = $('<a>').addClass('btn btn-primary btn-sm mx-1').text("Booking History").attr("href", "/meeting_rooms/"+ meetingRoom.id +"/history/");
+                            var cardHeader = $('<h5>').addClass('card-header').text(meetingRoom.mroom_name);
+                            var roomImg = $('<img>').attr("src", meetingRoom.mr_image).css({"height":"200"});
+                            var cardBody = $("<div>").addClass("card-body");
+                            var ul = $('<ul>').addClass('list-group list-group-flush');
+                            var level = $('<li>').addClass('list-group-item').text("Level: " + meetingRoom.level);
+                            var capacity = $('<li>').addClass('list-group-item').text("Capacity: " + meetingRoom.capacity);
+
+                            // Append the elements to the card
+                            ul.append(level, capacity);
+                            cardBody.append(book_btn, history_btn)
+                            card.append(cardHeader, roomImg, ul, cardBody);
+                            col.append(card);
+                            container.append(col);
+                        });
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

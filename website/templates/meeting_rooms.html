@@ -6,7 +6,9 @@
         <div class="card bg-light ms-4 me-4 mb-4">
             <div class="card-header">
                 <h4><i class="fa-solid fa-house-laptop"></i> Meeting Rooms
+                    {% if user.is_staff or user.is_superuser %}
                     <a href="{% url 'add_mr' %}" class="btn btn-outline-primary btn-sm ms-2" >Add</a>
+                    {% endif %}
                 </h4> 
             </div>
 
@@ -26,7 +28,9 @@
                                 <li class="list-group-item">Capacity: {{ mr.capacity }}</li>
                             </ul>
                             <div class="card-body">
+                                {% if user.is_staff or user.is_superuser %}
                                 <a href="{% url 'update_mr' mr.id %}" class="btn btn-primary btn-sm">Update</a>
+                                {% endif %}
                                 <a href="{% url 'history' mr.id %}" class="btn btn-info btn-sm">Booking History</a>
                               </div>
                             <div class="card-footer text-muted">
