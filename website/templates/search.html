@@ -15,16 +15,20 @@
                             <div class="card-body">
                                 <form id="search-form">
                                     {% csrf_token %}
-                                    <label for="#start-date-input">Start Date: </label><br>
-                                    <input type="date" id="start-date-input" class="form-control" required="true"><br>
-                                    <label for="#start-time-input">Start Time: </label><br>
-                                    <input type="time" id="start-time-input" class="form-control" required="true"><br>
-                                    <label for="#end-date-input">End Date: </label><br>
-                                    <input type="date" id="end-date-input" class="form-control" required="true"><br>
-                                    <label for="#end-date-input">End Time: </label><br>
-                                    <input type="time" id="end-time-input" class="form-control" required="true"><br>
-                                    <br>
-                                    <button type="submit" class="btn btn-primary">Search</button>
+                                    
+                                    {{ form.start_date.label_tag }}
+                                    {{ form.start_date }}
+
+                                    {{ form.start_time.label_tag }}
+                                    {{ form.start_time }}
+
+                                    {{ form.end_date.label_tag }}
+                                    {{ form.end_date }}
+
+                                    {{ form.end_time.label_tag }}
+                                    {{ form.end_time }}
+                                    
+                                    <button type="submit" class="btn btn-primary my-2">Search</button>
                                 </form>
                             </div>
                         </div>
@@ -32,8 +36,7 @@
                     <div class="col-md-9">
                         <div class="card bg-light">
                             <div class="card-header">
-                                <h4>Available Rooms</h4>
-                                <span class="badge bg-info">{{ count }}</span>
+                                <h4>Available Meeting Rooms <span class="badge bg-info" id="mr-count"></span></h4>
                             </div>
                             <div class="card-body" >
                                 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" id="meeting-room-cards-container">
@@ -50,14 +53,17 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
     $(document).ready(function() {
+        var container = $('#meeting-room-cards-container');
+        var tosearch = $('<p>').addClass("text-muted p-4").text("Please search available meeting rooms using the Search form.");
+        container.append(tosearch);
         $('#search-form').submit(function(e) {
             e.preventDefault(); // Prevent form submission
 
             // Get input values
-            var startDate = $('#start-date-input').val();
-            var startTime = $('#start-time-input').val();
-            var endDate = $('#end-date-input').val();
-            var endTime = $('#end-time-input').val();
+            var startDate = $('#start-date').val();
+            var startTime = $('#start-time').val();
+            var endDate = $('#end-date').val();
+            var endTime = $('#end-time').val();
 
             // Send Ajax request
             $.ajax({
@@ -71,7 +77,7 @@
                     end_time: endTime
                 },
                 success: function(response) {
-                    var container = $('#meeting-room-cards-container');
+                    
                     // Clear the container before adding new card
                     container.empty();
 
@@ -79,10 +85,19 @@
                         var notfound = $('<p>').addClass("text-muted p-4").text("No meeting room available in the selected timeframe. Please search again.");
                         container.append(notfound);
                     }
+                    else if(response == "100") {
+                        var errormsg = $('<p>').addClass("text-danger p-4").text("End datetime should be later than start datetime.");
+                        container.append(errormsg);
+                    }
+                    else if(response == "200") {
+                        var errormsg = $('<p>').addClass("text-danger p-4").text("Selected date time should be later than now.");
+                        container.append(errormsg);
+                    }
                     else {
 
                         var meetingRooms = JSON.parse(response);
-                        
+                        $('#mr-count').text(Object.keys(meetingRooms).length);
+
                         $.each(meetingRooms, function(index, meetingRoom) {
                             // Create the Bootstrap card element
                             var col = $('<div>').addClass('col');
@@ -106,7 +121,7 @@
                     }
                 },
                 error: function(error) {
-                    console.log(error);
+                    // none
                 }
             });
         });

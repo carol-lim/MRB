@@ -5,7 +5,7 @@
     <div class="col-12">
         <div class="card bg-light ms-4 me-4 mb-4">
             <div class="card-header">
-                <h4><i class="fa-solid fa-house-laptop"></i> Meeting Rooms
+                <h4><i class="fa-solid fa-house-laptop"></i> Meeting Rooms <span class="badge bg-info">{{ count }}</span>
                     {% if user.is_staff or user.is_superuser %}
                     <a href="{% url 'add_mr' %}" class="btn btn-outline-primary btn-sm ms-2" >Add</a>
                     {% endif %}

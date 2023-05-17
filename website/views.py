@@ -111,7 +111,7 @@ def logout_user(request):
 def search(request):
     # form = SearchForm(request.POST or None)
     if request.method == "POST" and request.is_ajax():
-        # if form.is_valid():
+        form = SearchForm(request.POST)
         # booking = form.save()
         start_date = request.POST.get('start_date')
         start_time = request.POST.get('start_time')
@@ -128,30 +128,37 @@ def search(request):
         start_datetime = datetime.combine(sd, st)
         end_datetime = datetime.combine(ed, et)
 
-        # Serialize the available meeting rooms as JSON
-        available_rooms = get_available_meeting_rooms(start_datetime, end_datetime)
-        if available_rooms.count() > 0:
-
-            # Serialize the data using the custom encoder
-            room_list = []
-
-            for room in available_rooms:
-                # Convert the MeetingRoom instance to a dictionary
-                room_dict = model_to_dict(room)
-
-                # Convert the ImageFieldFile to a string representation (e.g., URL or path)
-                image_url = room.mr_image.url
-                room_dict['image'] = image_url
-
-                # Append the updated dictionary to the room_list
-                room_list.append(room_dict)
-
-            serialized_data = json.dumps(room_list, cls=CustomJSONEncoder)
-            return JsonResponse(serialized_data, safe=False)
+        if end_datetime <= start_datetime:
+            return JsonResponse("100", safe=False)
+        elif end_datetime <= datetime.today() or start_datetime <= datetime.today():
+            return JsonResponse("200", safe=False)
         else:
-            messages.success(request, "No meeting room available in the selected timeframe. Please search again.")
+            # Serialize the available meeting rooms as JSON
+            available_rooms = get_available_meeting_rooms(start_datetime, end_datetime)
+            if available_rooms.count() > 0:
 
-    return render(request, 'search.html')
+                # Serialize the data using the custom encoder
+                room_list = []
+
+                for room in available_rooms:
+                    # Convert the MeetingRoom instance to a dictionary
+                    room_dict = model_to_dict(room)
+
+                    # Convert the ImageFieldFile to a string representation (e.g., URL or path)
+                    image_url = room.mr_image.url
+                    room_dict['image'] = image_url
+
+                    # Append the updated dictionary to the room_list
+                    room_list.append(room_dict)
+
+                serialized_data = json.dumps(room_list, cls=CustomJSONEncoder)
+                return JsonResponse(serialized_data, safe=False)
+            else:
+                messages.success(request, "No meeting room available in the selected timeframe. Please search again.")
+    else:
+        form = SearchForm()
+        
+    return render(request, 'search.html', {'form': form})
 
 @login_required
 def booking(request):
@@ -160,7 +167,7 @@ def booking(request):
 
 @login_required
 def meeting_rooms(request):
-    return render(request, 'meeting_rooms.html', {'meeting_rooms': MeetingRoom.objects.all()})
+    return render(request, 'meeting_rooms.html', {'meeting_rooms': MeetingRoom.objects.all(), 'count':MeetingRoom.objects.all().count()})
     
 @login_required
 def add_mr(request):
