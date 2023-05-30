@@ -135,3 +135,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
     )
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # SMTP server address
+EMAIL_PORT = 587  # SMTP server port
+EMAIL_USE_TLS = True  # Use TLS encryption
+EMAIL_HOST_USER = 'carollim.dev@gmail.com'  # Email account username
+EMAIL_HOST_PASSWORD = 'vdmfxsfwljqflqai'  # Email account password

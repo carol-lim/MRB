@@ -10,7 +10,34 @@
             </div>
 
             <div class="card-body">
-              
+                <form method="POST" action="{% url 'add_admin' %}">
+                    {% csrf_token %}
+                
+                    <div class="form-group {% if form.my_field.errors %}has-error{% endif %}">
+                        {{ form.username.label_tag }}
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            {% for error in form.username.errors %}
+                                <span class="help-block text-danger">{{ error }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <br/>
+                    {{ form.first_name.label_tag }}
+                    {{ form.first_name }}
+                    <br/>
+                    {{ form.last_name.label_tag }}
+                    {{ form.last_name }}
+                    <br/>
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                    <br/>
+
+                <br/>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                    <a href="{% url 'admin_list' %}" class="btn btn-secondary">Back</a>
+                
+                </form>
                 
             </div>
 
