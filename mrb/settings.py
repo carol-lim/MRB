@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'website',
+    'mrb',
+    'User',
+    'MeetingRoom',
 ]
 
 MIDDLEWARE = [
@@ -58,7 +60,7 @@ ROOT_URLCONF = 'mrb.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,7 +82,7 @@ WSGI_APPLICATION = 'mrb.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'sql_server.pyodbc',
-        'NAME': 'mrb',
+        'NAME': 'mrb3',
         'Trusted_Connection': 'yes',
         'HOST': 'MY-CAROLLIM1\SQLEXPRESS',
         'OPTIONS': {
@@ -115,7 +117,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "Asia/Kuala_Lumpur"
 
 USE_I18N = True
 
@@ -141,4 +143,4 @@ EMAIL_HOST = 'smtp.gmail.com'  # SMTP server address
 EMAIL_PORT = 587  # SMTP server port
 EMAIL_USE_TLS = True  # Use TLS encryption
 EMAIL_HOST_USER = 'carollim.dev@gmail.com'  # Email account username
-EMAIL_HOST_PASSWORD = 'vdmfxsfwljqflqai'  # Email account password
+EMAIL_HOST_PASSWORD = 'vqmmgpifnjwdxwlg'  # Email account password

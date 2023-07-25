@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-light mb-3">
+            <div class="card-header">
+                <h5><i class="fa-solid fa-user-gear"></i> Administrator
+                    <button type="button" class="btn btn-outline-primary btn-sm mb-0" style="float: right;" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">
+                        <i class="fa-solid fa-user-plus"></i>  Invite User
+                    </button>
+                </h5> 
+            </div>
+
+            <div class="card-body">
+                {% if administrators %}
+                <div class="table-responsive">
+                    <table id="l1Table" width="100%" class="table table-hover">
+                        <thead>
+                            <tr class="table-primary">
+                                <th>Email</th>
+                                <th>First Name</th>
+                                <th>Last Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for administrator in administrators %}
+                            <tr class="table-active">
+                                <td>{{administrator.email}}</td>
+                                <td>{{administrator.first_name}}</td>
+                                <td>{{administrator.last_name}}</td>
+                            </tr>
+                            {% endfor %}
+                            
+                            
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="text-muted p-4">No administrator.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card bg-light mb-3">
+            <div class="card-header pb-0">
+                <h5><i class="fa-solid fa-user-tie"></i> Invitee
+                </h5> 
+                <p class="text-muted text-sm">Invitation sent but never registered.</p> 
+            </div>
+
+            <div class="card-body">
+                <div class="table-responsive">
+                    {% if invitations %}
+                    <table id="clientInviteeTable" width="100%" class="table table-hover">
+                        <thead>
+                            <tr class="table-primary">
+                                <th>Email</th>
+                                <th>Option</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in invitations %}
+                            <tr class="table-active">
+                                <td>{{i.email}}</td>
+                                <td>
+                                    <form method="POST" action="{% url 'deleteInvitation' i.id %}">
+                                        {% csrf_token %}
+                                        <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="text-muted p-4">No invitation.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: Invite support -->
+<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop1Label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'add_admin' %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdrop1Label">Invite Administrator</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-4">
+                        <label class="form-label">Email address</label>
+                        <input type="email" class="form-control" placeholder="Example: johndoe1234@email.com" id="exampleInputEmail1" required name="email"
+                            aria-describedby="emailHelp">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default mb-0" data-bs-dismiss="modal">Close</button>
+                    <button type="Submit" class="btn btn-primary mb-0">Invite</button>
+                </div>
+            </form>
+        </div>  
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-light mb-3">
+            <div class="card-header">
+                <h5><i class="fa-solid fa-user-gear"></i> Meeting Type
+                    <a href="{% url 'meeting_rooms' %}" class="btn btn-outline-secondary btn-sm ms-2" style="float: right;">Back</a>
+                    <button type="button" class="btn btn-outline-primary btn-sm mb-0" style="float: right;" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">
+                        <i class="fa-solid fa-user-plus"></i>  Add
+                    </button>
+                </h5> 
+            </div>
+
+            <div class="card-body">
+                {% if types %}
+                <div class="table-responsive">
+                    <table id="l1Table" width="100%" class="table table-hover">
+                        <thead>
+                            <tr class="table-primary">
+                                <th>ID</th>
+                                <th>Type</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for type in types %}
+                            <tr class="table-active">
+                                <td>{{type.id}}</td>
+                                <td>{{type.type}}</td>
+                                <td>
+                                    {% if user.is_staff or user.is_superuser %}
+                                    <a href="{% url 'update_type' type.id %}" class="btn btn-primary btn-sm">Update</a>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                            
+                            
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p class="text-muted p-4">No meeting type.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+<!-- Modal: Invite support -->
+<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdrop1Label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'add_type' %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdrop1Label">Add Meeting Type</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-4">
+                        <label class="form-label">Type name</label>
+                        <input type="text" class="form-control" placeholder="Example: Department Meeting" id="exampleInputType1" required name="type">
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default mb-0" data-bs-dismiss="modal">Close</button>
+                    <button type="Submit" class="btn btn-primary mb-0">Submit</button>
+                </div>
+            </form>
+        </div>  
+    </div>
+</div>
+
+{% endblock %}

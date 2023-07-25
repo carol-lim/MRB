@@ -1,0 +1,51 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="{% url 'home' %}">MRB</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        
+        {% if user.is_authenticated %}
+          {% if user.is_staff or user.is_superuser %}
+
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'meeting_rooms' %}">Meeting Rooms</a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'admin_list' %}">Administrator</a>
+        </li>
+
+          {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'meeting_rooms' %}">Meeting Rooms</a>
+        </li>
+          
+          {% endif %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+        </li>
+        
+        {% else %}
+      
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'login' %}">Login</a>
+        </li>
+        {% endif %}
+        
+      </ul>
+      {% if user.is_authenticated %}
+
+      <span class="navbar-text">
+        {% if not user.first_name %}
+        {{user.username}}
+        {% else %}
+        {{ user.first_name }} {{ user.last_name }} 
+        {% endif %}
+      </span>
+      {% endif %}
+      </div>
+  </div>
+</nav>

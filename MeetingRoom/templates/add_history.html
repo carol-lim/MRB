@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-light ms-4 me-4 mb-4">
+            <div class="card-header">
+                <h4><i class="fa-solid fa-clock-rotate-left"></i> Meeting Room Booking History
+                <a href="{% url 'history' meeting_room.id %}" class="btn btn-outline-secondary btn-sm ms-2" style="float: right;">Back</a></h4> 
+            </div>
+
+            <div class="card-body">
+                <div class="row g-3">
+
+                    <div class="col-md-3">
+                        {% include 'mr_card.html' %}
+                    </div>
+
+                    <div class="col-md-5">
+                        <div class="card bg-light">
+                            <div class="card-header">
+                                <h4>Add Meeting Room Booking History</h4>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="row ">
+
+                                    <form method="POST" action="{% url 'add_history' meeting_room.id %}" >
+                                        {% csrf_token %}
+                                    
+                                        {{ form.as_p }}
+                                    <br/>
+                                        <button type="submit" class="btn btn-primary">Add</button>
+                                    
+                                    </form>
+                                    
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

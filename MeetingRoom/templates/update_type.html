@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card bg-light  mb-4">
+            <div class="card-header">
+                <h5><i class="fa-solid fa-pen"></i>  {{ title }}
+                    <a href="{% url 'meeting_type' %}" class="btn btn-outline-secondary btn-sm" style="float: right;">Back</a>
+                </h5> 
+            </div>
+
+            <div class="card-body">
+                <form method="POST" action="{% url 'update_type' type.id %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <br>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+{% endblock %}
