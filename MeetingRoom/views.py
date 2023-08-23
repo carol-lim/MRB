@@ -88,7 +88,6 @@ def search(request):
     # form = SearchForm(request.POST or None)
     if request.method == "POST" and request.is_ajax():
         form = bookingForm(request.POST)
-        # booking = form.save()
         start_date = request.POST.get('start_date')
         start_time = request.POST.get('start_time')
         end_date = request.POST.get('start_date')
@@ -113,34 +112,25 @@ def search(request):
             return JsonResponse("200", safe=False)
         else:
             # Serialize the available meeting rooms as JSON
-            available_rooms = get_available_meeting_rooms(start_datetime, end_datetime).filter(capacity__gte = num_attendees, type=selectedType)
+            available_rooms = get_available_meeting_rooms(start_datetime, end_datetime).filter(
+                capacity__gte = num_attendees, type=selectedType
+            )
             if available_rooms.count() > 0:
-
-                # Serialize the data using the custom encoder
                 room_list = []
 
                 for room in available_rooms:
-                    # Convert the MeetingRoom instance to a dictionary
                     room_dict = model_to_dict(room)
-
-                    # Convert the ImageFieldFile to a string representation (e.g., URL or path)
-                    # image_url = room.mr_image.url
                     typeName = room.type.type
-                    # room_dict['image'] = image_url
                     room_dict['meetingType'] = typeName
                     room_dict['selectedTypeName'] = selectedTypeName
-
-                    # Append the updated dictionary to the room_list
                     room_list.append(room_dict)
 
                 serialized_data = json.dumps(room_list, cls=CustomJSONEncoder)
                 return JsonResponse(serialized_data, safe=False)
             else:
                 return JsonResponse("300", safe=False)
-                # messages.warning(request, "No meeting room available in the selected timeframe. Please search again.")
     else:
         form = bookingForm()
-        
     return render(request, 'search.html', {'form': form})
 
 @login_required
@@ -161,14 +151,23 @@ def booking(request):
         ed = datetime.strptime(end_date, '%Y-%m-%d').date()
         et = datetime.strptime(end_time, '%H:%M').time()
         
-        newbooking = MRBooking.objects.create(staff=staff, mroom=MeetingRoom.objects.get(id=mroom), start_date=sd, start_time=st, end_date=ed, end_time=et, num_attendees=num_attendees, type=MeetingType.objects.get(id=type))
+        newbooking = MRBooking.objects.create(
+            staff=staff, 
+            mroom=MeetingRoom.objects.get(id=mroom), 
+            start_date=sd, 
+            start_time=st, 
+            end_date=ed, 
+            end_time=et, 
+            num_attendees=num_attendees, 
+            type=MeetingType.objects.get(id=type)
+        )
         newbooking.save()
 
         return JsonResponse("1", safe=False)    
 
 @login_required
 def meeting_rooms(request):
-    return render(request, 'meeting_rooms.html', {'meeting_rooms': MeetingRoom.objects.all(), 'count':MeetingRoom.objects.all().count()})
+    return render(request, 'meeting_rooms.html', {'meeting_rooms': MeetingRoom.objects.all().order_by('-id'), 'count':MeetingRoom.objects.all().count()})
     
 @login_required
 def add_mr(request):
@@ -195,6 +194,17 @@ def update_mr(request, pk):
             messages.success(request, "Meeting Room Has Been Updated")
             return redirect('meeting_rooms')
         return render(request, 'update_mr.html', {'form':form})
+
+@login_required
+def delete_mr(request, pk):
+    if request.method == "POST":
+        MRBooking.objects.filter(mroom=pk).delete()
+        MeetingRoom.objects.filter(id=pk).delete()
+        messages.success(request, "Meeting room record is deleted successfully")
+        return redirect("meeting_rooms")
+    
+    return redirect("meeting_rooms")
+
 
 @login_required
 def history(request, pk):

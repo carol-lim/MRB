@@ -135,8 +135,19 @@
                             // Create the Bootstrap card element
                             var col = $('<div>').addClass('col');
                             var card = $("<div>").addClass("card");
-                            var book_btn = $('<button>').addClass('btn btn-primary btn-sm mx-1').text("Book").attr("type","submit").attr("data-bs-toggle", "modal").attr("data-bs-target", "#bookModal").attr("data-bs-mroomid",meetingRoom.id).attr("data-bs-roomname",meetingRoom.mroom_name).attr("data-bs-sd",startDate).attr("data-bs-st",startTime).attr("data-bs-et",endTime).attr("data-bs-na",numAtt).attr("data-bs-type",meetingRoom.selectedTypeName);
-                            var history_btn = $('<a>').addClass('btn btn-info btn-sm mx-1').text("Booking History").attr("href", "/meeting_rooms/"+ meetingRoom.id +"/history/").attr("target", "_blank");
+                            var book_btn = $('<button>').addClass('btn btn-primary btn-sm mx-1').text("Book")
+                                .attr("type","submit").attr("data-bs-toggle", "modal")
+                                .attr("data-bs-target", "#bookModal")
+                                .attr("data-bs-mroomid",meetingRoom.id)
+                                .attr("data-bs-roomname",meetingRoom.mroom_name)
+                                .attr("data-bs-sd",startDate)
+                                .attr("data-bs-st",startTime)
+                                .attr("data-bs-et",endTime)
+                                .attr("data-bs-na",numAtt)
+                                .attr("data-bs-type",meetingRoom.selectedTypeName);
+                            var history_btn = $('<a>').addClass('btn btn-info btn-sm mx-1').text("Booking History")
+                                .attr("href", "/meeting_rooms/"+ meetingRoom.id +"/history/")
+                                .attr("target", "_blank");
                             var cardHeader = $('<h5>').addClass('card-header').text(meetingRoom.mroom_name);
                             var roomImg = $('<img>').attr("src", meetingRoom.mr_image).css({"height":"200"});
                             var cardBody = $("<div>").addClass("card-body");
@@ -179,7 +190,7 @@
         const mType = button.getAttribute('data-bs-type')
 
         modalbody.textContent = 'Meeting Room: '+name
-        modalbody.textContent += '\r\Date: '+sd
+        modalbody.textContent += '\r\nDate: '+sd
         modalbody.textContent += '\r\nStart Time: '+st      
         // modalbody.textContent += '\r\nEnd Date: '+ed
         modalbody.textContent += '\r\nEnd Time: '+et
@@ -191,7 +202,7 @@
         // Get input values
         var mroomid = this.getAttribute('data-bs-mroomid')
         var startDate = $('#start-date').val();
-        var startDate = $('#start-date').val();
+        var endDate = $('#start-date').val();
         var startTime = $('#start-time').val();
         // var endDate = $('#end-date').val();
         var endTime = $('#end-time').val();
@@ -206,7 +217,7 @@
                 mroom: mroomid,
                 start_date: startDate,
                 start_time: startTime,
-                // end_date: endDate,
+                end_date: endDate,
                 end_time: endTime,
                 num_attendees: numAtt,
                 type: mType,

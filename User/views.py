@@ -15,11 +15,15 @@ from .models import Invitations
 from django.db import IntegrityError
 from django.views.decorators.http import require_http_methods
 import uuid
+import random
+import string
 from django.template.loader import render_to_string
 from django.views.decorators.http import require_http_methods
 from django.db import IntegrityError
 from django.core.mail import (EmailMessage, EmailMultiAlternatives, get_connection, send_mail)
 from django.db import transaction
+from django.contrib.auth.hashers import make_password
+
 
 def authenticate(email, password):
     try:
@@ -70,6 +74,17 @@ def login_view(request):
         context = {"form": form, "title": "Meeting Room Booking - Login", "uuid": request.GET.get("uuid")}
     return render(request, "auth/login.html", context)
 
+def generateRandomUsername():
+    # Generate a random username
+    length=8
+    while True:
+        letters_and_digits = string.ascii_letters + string.digits
+        username = ''.join(random.choices(letters_and_digits, k=length))
+        if not get_user_model().objects.filter(username=username).exists():
+            break
+    return username
+
+
 def signup(request):
     if request.user.is_authenticated:
         return redirect("home")
@@ -77,17 +92,40 @@ def signup(request):
     if request.method == 'POST':
         form = CustomSignUpForm(request.POST)
         if form.is_valid():
+            
             try:
-                user = form.save()
+                email = form.cleaned_data['email']
+                password = form.cleaned_data['password1']
+                first_name = form.cleaned_data['first_name']
+                last_name = form.cleaned_data['last_name']
+
+                # Check if the email is already registered
+                if get_user_model().objects.filter(email=email).exists():
+                    msg = "This email is already registered."
+                    messages.error(request, msg)
+                    return render(request, 'auth/signup.html', {'form': form})
+                    
+                else:
+                    user = get_user_model().objects.create(
+                        email=email,
+                        password=make_password(password),
+                        username=generateRandomUsername(),
+                        first_name=first_name,
+                        last_name=last_name
+                    )
+                    msg = "Registrered successful."
+                    messages.success(request, msg)
+                    
+                    auth_login(request, user)
+                    msg = "Login successful."
+                    messages.success(request, msg)
+                    return redirect("home")
+                    
             except IntegrityError :
-                msg = """This email already registered."""
+                msg = "An error occurred during registration."
                 messages.error(request, msg)
                 return render(request, 'auth/signup.html', {'form': form})
 
-            auth_login(request, user)
-            msg = """Login successful."""
-            messages.success(request, f"{msg}")
-            return redirect('home') 
         else:
             msg = """Invalid password."""
             messages.error(request, msg)
@@ -129,8 +167,11 @@ def signup_admin(request, uuid):
                 try:
                     user.is_superuser = True
                     user.is_staff = True
+                    user.username = generateRandomUsername()
                     with transaction.atomic():
                         user.save()  
+                        msg = """Signup successfully."""
+                        messages.success(request, f"{msg}")
                 except IntegrityError as e:
                     msg = """This email already registered."""
                     messages.error(request, msg)
