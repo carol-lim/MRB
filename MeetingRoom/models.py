@@ -13,7 +13,7 @@ class MeetingRoom(models.Model):
 	mroom_name = models.CharField(max_length=50)
 	level = models.IntegerField()
 	capacity = models.IntegerField()
-	mr_image = models.ImageField(upload_to="images/", default="images\default.PNG")
+	mr_image = models.ImageField(upload_to="images/", default="default\default.PNG")
 	type = models.ForeignKey(MeetingType, on_delete=models.CASCADE, related_name='meetingroom')
 
 	def __str__(self):

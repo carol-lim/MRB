@@ -28,8 +28,14 @@ class MRForm(forms.ModelForm):
             'capacity': forms.NumberInput(attrs={ "class":"form-control", "required": "true", "min": "2"}),
             'type': forms.Select(attrs={ "class":"form-control", "required": "true"}),
 		}
-    
+
 class bookingForm(forms.ModelForm):
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		staff_choices = [(staff.id, f"{staff.first_name} {staff.last_name}") for staff in User.objects.all()]
+		self.fields['staff'].choices = staff_choices
+
 	class Meta:
 		current_date = timezone.now().date()
 		model = MRBooking
@@ -65,12 +71,13 @@ class bookingForm(forms.ModelForm):
 				  attrs={"class":"form-select form-control", "required": "true", "id": "start-time"}),
 			'end_time':forms.Select(choices=[(f'{hour:02d}:{minute:02d}', f'{hour:02d}:{minute:02d}') for hour in range(8, 19) for minute in (0, 30)],
 				attrs={"class":"form-select form-control", "required": "true", "id": "end-time"}),
-
-			# 'start_date':DateInput(attrs={ "class":"form-control", "required": "true"}),
-			# 'end_date':DateInput(attrs={"class":"form-control","required":"true"}),
-			# 'start_time':TimeInput(attrs={ "class":"form-control","required":"true",}),
-			# 'end_time':TimeInput(attrs={ "class":"form-control","required":"true"}),
 		}
+
+			
+		# 'start_date':DateInput(attrs={ "class":"form-control", "required": "true"}),
+		# 'end_date':DateInput(attrs={"class":"form-control","required":"true"}),
+		# 'start_time':TimeInput(attrs={ "class":"form-control","required":"true",}),
+		# 'end_time':TimeInput(attrs={ "class":"form-control","required":"true"}),
    
 class TypeForm(forms.ModelForm):
 	class Meta:

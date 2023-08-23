@@ -24,9 +24,7 @@
         </li>
           
           {% endif %}
-        <li class="nav-item">
-          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
-        </li>
+     
         
         {% else %}
       
@@ -34,18 +32,27 @@
           <a class="nav-link" href="{% url 'login' %}">Login</a>
         </li>
         {% endif %}
-        
       </ul>
-      {% if user.is_authenticated %}
+        
+        {% if user.is_authenticated %}
+        <div class="nav-item dropdown d-flex">
+          <a class="nav-link dropdown-toggle text-" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 
-      <span class="navbar-text">
-        {% if not user.first_name %}
-        {{user.username}}
-        {% else %}
-        {{ user.first_name }} {{ user.last_name }} 
+            <!-- <span class="navbar-text"> -->
+              {% if not user.first_name %}
+              {{user.username}}
+              {% else %}
+              {{ user.first_name }} {{ user.last_name }} 
+              {% endif %}
+            <!-- </span> -->
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+          </ul>
+        </div>
         {% endif %}
-      </span>
-      {% endif %}
+        
+    
       </div>
   </div>
 </nav>
